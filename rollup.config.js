@@ -64,7 +64,10 @@ function createConfig(format, output, plugins = []) {
   output.sourcemap = !!process.env.SOURCE_MAP
   output.banner = banner
   output.externalLiveBindings = false
-  output.globals = { vue: 'Vue', '@vue/devtools-api': 'VueDevtoolsApi' }
+  output.globals = {
+    vue: 'Vue',
+    '@vue/devtools-api': 'VueDevtoolsApi',
+  }
 
   const isProductionBuild = /\.prod\.js$/.test(output.file)
   const isGlobalBuild = format === 'global'
@@ -94,7 +97,10 @@ function createConfig(format, output, plugins = []) {
   // during a single build.
   hasTSChecked = true
 
-  const external = ['vue', '@vue/devtools-api']
+  const external = [
+    'vue',
+    // '@vue/devtools-api',
+  ]
 
   const nodePlugins = [resolve(), commonjs()]
 
@@ -144,6 +150,9 @@ function createReplacePlugin(
     __TEST__: isBundlerESMBuild ? `(process.env.NODE_ENV === 'test')` : false,
     // If the build is expected to run directly in the browser (global / esm builds)
     __BROWSER__: isBrowserBuild,
+    __FEATURE_PROD_DEVTOOLS__: isBundlerESMBuild
+      ? `__VUE_PROD_DEVTOOLS__`
+      : false,
     // is targeting bundlers?
     __BUNDLER__: isBundlerESMBuild,
     __GLOBAL__: isGlobalBuild,
